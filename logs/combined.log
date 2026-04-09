@@ -1,0 +1,5 @@
+{"level":"info","message":"[Server] Student Portal running on port 5000","timestamp":"2026-04-09T23:29:44.758Z"}
+{"level":"info","message":"[Server] Student Portal running on port 5000","timestamp":"2026-04-09T23:29:49.427Z"}
+{"level":"info","message":"[Server] Student Portal running on port 5000","timestamp":"2026-04-09T23:30:35.018Z"}
+{"level":"info","message":"GET /health 200 54 - 4.876 ms ::1","timestamp":"2026-04-09T23:31:25.852Z"}
+{"level":"info","message":"GET /favicon.ico 404 28 - 0.546 ms ::1","timestamp":"2026-04-09T23:31:28.452Z"}
