@@ -1,17 +1,17 @@
-#  Student Portal — Secure Client-Server Application
+# Student Portal — Secure Client-Server Application
 > **SECU2000 — Application Security | Group Project**
 
 A full-stack, security-first student portal demonstrating layered architecture, OWASP Top 10 mitigations, and real-world threat modelling.
 
 ---
 
-## 👥 Team
+## Team
 
 | Name | Role |
 |------|------|
-| Heli Patel | Frontend & XSS Security |
-| Blessy Baiju | Backend & Security Implementation |
+| Blessy Baiju | Backend API, Security Implementation & Frontend UI |
 | Ayush Prajapati | Testing, OWASP & Documentation |
+| Heli Patel | Frontend Design Planning (UI Planning) |
 
 ---
 
@@ -101,12 +101,12 @@ Health check: `http://localhost:5000/health`
 
 ### Injection Prevention (OWASP A03)
 - 100% parameterized PostgreSQL queries — no string concatenation
-- Input validation on all endpoints via `express-validator`
+- Input validation on all endpoints via `express-validator.`
 - Output encoding delegated to frontend
 
 ### Broken Access Control (OWASP A01)
 - Students can only access their own grades/files (IDOR prevention)
-- Admin routes require both authentication AND admin role
+- Admin routes require both authentication and an admin role
 - Admins cannot demote their own account
 
 ### Security Misconfiguration (OWASP A05)
@@ -177,7 +177,7 @@ audit_logs     → id, user_id (FK), action, ip_address, status, details
 
 ---
 
-## 🔗 API Overview
+##  API Overview
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
