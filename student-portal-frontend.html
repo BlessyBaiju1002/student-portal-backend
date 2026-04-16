@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Portal — SECU2000</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #222636;
+    --border: #2d3148;
+    --accent: #6c63ff;
+    --accent2: #00d4aa;
+    --danger: #ff4d6d;
+    --warning: #ffa500;
+    --text: #e8eaf6;
+    --text2: #8b90b0;
+    --success: #00d4aa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── LOGIN PAGE ── */
+  #login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at 20% 50%, #1a1560 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 50%, #0d3d33 0%, transparent 60%),
+                var(--bg);
+  }
+
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 48px;
+    width: 420px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+  }
+
+  .login-logo {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .login-logo .icon {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+
+  .login-logo h1 { font-size: 22px; font-weight: 700; }
+  .login-logo p { color: var(--text2); font-size: 13px; margin-top: 4px; }
+
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text2); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .form-group input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus { border-color: var(--accent); }
+
+  .btn {
+    width: 100%;
+    padding: 13px;
+    border-radius: 8px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #8b5cf6);
+    color: white;
+  }
+
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(108,99,255,0.4); }
+
+  .error-msg {
+    background: rgba(255,77,109,0.1);
+    border: 1px solid rgba(255,77,109,0.3);
+    border-radius: 8px;
+    padding: 12px;
+    color: var(--danger);
+    font-size: 13px;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  /* ── MAIN APP ── */
+  #app { display: none; }
+
+  .layout { display: flex; min-height: 100vh; }
+
+  /* Sidebar */
+  .sidebar {
+    width: 240px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    padding: 0 20px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .sidebar-logo h2 { font-size: 16px; font-weight: 700; }
+  .sidebar-logo span { font-size: 11px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    color: var(--text2);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    margin: 2px 8px;
+    transition: all 0.15s;
+    border: none;
+    background: none;
+    width: calc(100% - 16px);
+    text-align: left;
+  }
+
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: rgba(108,99,255,0.15); color: var(--accent); }
+  .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px 8px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .user-badge {
+    padding: 12px;
+    background: var(--surface2);
+    border-radius: 8px;
+    margin: 0 0 8px;
+  }
+
+  .user-badge .name { font-size: 13px; font-weight: 600; }
+  .user-badge .role {
+    font-size: 11px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  /* Main content */
+  .main {
+    margin-left: 240px;
+    flex: 1;
+    padding: 32px;
+    min-height: 100vh;
+  }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .page-header {
+    margin-bottom: 28px;
+  }
+
+  .page-header h1 { font-size: 24px; font-weight: 700; }
+  .page-header p { color: var(--text2); font-size: 14px; margin-top: 4px; }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .stat-card .label { font-size: 12px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-card .value { font-size: 28px; font-weight: 700; margin-top: 8px; }
+  .stat-card .value.green { color: var(--success); }
+  .stat-card .value.purple { color: var(--accent); }
+  .stat-card .value.orange { color: var(--warning); }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text2);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 14px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+
+  /* Badge */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .badge-green { background: rgba(0,212,170,0.15); color: var(--success); }
+  .badge-purple { background: rgba(108,99,255,0.15); color: var(--accent); }
+  .badge-red { background: rgba(255,77,109,0.15); color: var(--danger); }
+  .badge-orange { background: rgba(255,165,0,0.15); color: var(--warning); }
+
+  /* Search bar */
+  .search-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .search-bar input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .search-bar input:focus { border-color: var(--accent); }
+
+  .btn-sm {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--accent);
+    color: white;
+    transition: all 0.2s;
+  }
+
+  .btn-sm:hover { background: #5a52e0; }
+
+  /* Upload */
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .upload-zone:hover { border-color: var(--accent); background: rgba(108,99,255,0.05); }
+  .upload-zone .icon { font-size: 40px; margin-bottom: 12px; }
+  .upload-zone p { color: var(--text2); font-size: 14px; }
+  .upload-zone input { display: none; }
+
+  /* Alert */
+  .alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  .alert-success { background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.3); color: var(--success); }
+  .alert-error { background: rgba(255,77,109,0.1); border: 1px solid rgba(255,77,109,0.3); color: var(--danger); }
+
+  /* Log entries */
+  .log-entry {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .log-entry:last-child { border-bottom: none; }
+  .log-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .log-dot.success { background: var(--success); }
+  .log-dot.failure { background: var(--danger); }
+  .log-dot.warning { background: var(--warning); }
+  .log-action { font-weight: 600; min-width: 160px; }
+  .log-time { color: var(--text2); font-family: 'DM Mono', monospace; font-size: 11px; margin-left: auto; }
+
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--text2);
+    font-size: 14px;
+  }
+
+  .empty {
+    text-align: center;
+    padding: 40px;
+    color: var(--text2);
+  }
+
+  .empty .icon { font-size: 40px; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="icon">🎓</div>
+      <h1>Student Portal</h1>
+      <p>SECU2000 — Application Security Project</p>
+    </div>
+    <div class="error-msg" id="login-error"></div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="login-email" placeholder="admin@studentportal.com" value="admin@studentportal.com">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="login-password" placeholder="Enter your password" value="Admin@1234">
+    </div>
+    <button class="btn btn-primary" onclick="doLogin()">Sign In →</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <div class="layout">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <h2>🎓 Student Portal</h2>
+        <span>Secure Application</span>
+      </div>
+
+      <button class="nav-item active" onclick="showPage('dashboard', this)">
+        <span class="icon">📊</span> Dashboard
+      </button>
+      <button class="nav-item" onclick="showPage('courses', this)">
+        <span class="icon">📚</span> Courses
+      </button>
+      <button class="nav-item" onclick="showPage('grades', this)">
+        <span class="icon">📝</span> My Grades
+      </button>
+      <button class="nav-item" onclick="showPage('upload', this)">
+        <span class="icon">📤</span> Upload Files
+      </button>
+      <div id="admin-nav" style="display:none">
+        <button class="nav-item" onclick="showPage('admin', this)">
+          <span class="icon">⚙️</span> Admin Panel
+        </button>
+        <button class="nav-item" onclick="showPage('logs', this)">
+          <span class="icon">🔍</span> Audit Logs
+        </button>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="user-badge">
+          <div class="name" id="sidebar-name">Loading...</div>
+          <div class="role" id="sidebar-role">—</div>
+        </div>
+        <button class="nav-item" onclick="doLogout()">
+          <span class="icon">🚪</span> Logout
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <h1>Dashboard</h1>
+          <p>Welcome back! Here's your overview.</p>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="label">Enrolled Courses</div>
+            <div class="value purple" id="stat-courses">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Average Grade</div>
+            <div class="value green" id="stat-grade">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Files Uploaded</div>
+            <div class="value orange" id="stat-files">—</div>
+          </div>
+        </div>
+        <div class="card">
+          <h3 style="margin-bottom:16px; font-size:15px;">Recent Enrollments</h3>
+          <div id="dashboard-enrollments"><div class="loading">Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- COURSES -->
+      <div class="page" id="page-courses">
+        <div class="page-header">
+          <h1>Courses</h1>
+          <p>Browse and search available courses</p>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="course-search" placeholder="Search by title or course code..." onkeypress="if(event.key==='Enter') searchCourses()">
+          <button class="btn-sm" onclick="searchCourses()">Search</button>
+          <button class="btn-sm" style="background:var(--surface2); color:var(--text)" onclick="loadCourses()">Reset</button>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Title</th>
+                  <th>Instructor</th>
+                  <th>Capacity</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="courses-table"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- GRADES -->
+      <div class="page" id="page-grades">
+        <div class="page-header">
+          <h1>My Grades</h1>
+          <p>View your enrolled courses and grades</p>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Course Code</th>
+                  <th>Title</th>
+                  <th>Grade</th>
+                  <th>Status</th>
+                  <th>Enrolled</th>
+                </tr>
+              </thead>
+              <tbody id="grades-table"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- UPLOAD -->
+      <div class="page" id="page-upload">
+        <div class="page-header">
+          <h1>Upload Files</h1>
+          <p>Upload documents, assignments, or profile images</p>
+        </div>
+        <div class="alert alert-success" id="upload-success"></div>
+        <div class="alert alert-error" id="upload-error"></div>
+        <div class="card">
+          <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+            <div class="icon">📁</div>
+            <p><strong>Click to upload</strong> or drag and drop</p>
+            <p style="margin-top:8px; font-size:12px;">Allowed: JPG, PNG, PDF — Max 5MB</p>
+            <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.pdf" onchange="handleFileSelect(this)">
+          </div>
+          <div id="file-selected" style="display:none; margin-top:16px; padding:12px; background:var(--surface2); border-radius:8px; font-size:13px;"></div>
+          <button class="btn-sm" style="margin-top:16px;" onclick="uploadFile()">Upload File</button>
+        </div>
+        <div class="card">
+          <h3 style="margin-bottom:16px; font-size:15px;">My Uploaded Files</h3>
+          <div id="my-files"><div class="loading">Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- ADMIN -->
+      <div class="page" id="page-admin">
+        <div class="page-header">
+          <h1>Admin Panel</h1>
+          <p>Manage users and system settings</p>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                </tr>
+              </thead>
+              <tbody id="admin-users-table"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUDIT LOGS -->
+      <div class="page" id="page-logs">
+        <div class="page-header">
+          <h1>Audit Logs</h1>
+          <p>Security event monitoring — OWASP A09</p>
+        </div>
+        <div class="card">
+          <div id="audit-logs"><div class="loading">Loading...</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'http://localhost:5000';
+let token = null;
+let currentUser = null;
+
+// ── AUTH ──────────────────────────────────────────
+async function doLogin() {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+
+  try {
+    const res = await fetch(`${API}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      errEl.textContent = data.error || 'Login failed';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    token = data.token;
+    currentUser = data.user;
+
+    document.getElementById('sidebar-name').textContent = currentUser.full_name;
+    document.getElementById('sidebar-role').textContent = currentUser.role.toUpperCase();
+
+    if (currentUser.role === 'admin') {
+      document.getElementById('admin-nav').style.display = 'block';
+    }
+
+    document.getElementById('login-page').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+
+    loadDashboard();
+  } catch (err) {
+    errEl.textContent = 'Cannot connect to server. Make sure backend is running!';
+    errEl.style.display = 'block';
+  }
+}
+
+async function doLogout() {
+  try {
+    await fetch(`${API}/api/auth/logout`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  } catch(e) {}
+  token = null;
+  currentUser = null;
+  document.getElementById('login-page').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+function authHeaders() {
+  return { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+}
+
+// ── NAVIGATION ────────────────────────────────────
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(`page-${name}`).classList.add('active');
+  if (btn) btn.classList.add('active');
+
+  if (name === 'courses') loadCourses();
+  if (name === 'grades') loadGrades();
+  if (name === 'upload') loadMyFiles();
+  if (name === 'admin') loadAdminUsers();
+  if (name === 'logs') loadAuditLogs();
+}
+
+// ── DASHBOARD ─────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const [gradesRes, filesRes] = await Promise.all([
+      fetch(`${API}/api/grades/my`, { headers: authHeaders() }),
+      fetch(`${API}/api/upload/my-files`, { headers: authHeaders() })
+    ]);
+
+    const gradesData = await gradesRes.json();
+    const filesData = await filesRes.json();
+
+    const enrollments = gradesData.enrollments || [];
+    const files = filesData.files || [];
+
+    document.getElementById('stat-courses').textContent = enrollments.length;
+    document.getElementById('stat-files').textContent = files.length;
+
+    const grades = enrollments.filter(e => e.grade !== null).map(e => e.grade);
+    const avg = grades.length ? (grades.reduce((a,b) => a + parseFloat(b), 0) / grades.length).toFixed(1) : 'N/A';
+    document.getElementById('stat-grade').textContent = avg !== 'N/A' ? `${avg}%` : 'N/A';
+
+    const tbody = document.getElementById('dashboard-enrollments');
+    if (enrollments.length === 0) {
+      tbody.innerHTML = '<div class="empty"><div class="icon">📚</div><p>No enrollments yet</p></div>';
+    } else {
+      tbody.innerHTML = `<div class="table-wrap"><table>
+        <thead><tr><th>Course</th><th>Title</th><th>Grade</th><th>Status</th></tr></thead>
+        <tbody>${enrollments.slice(0,5).map(e => `
+          <tr>
+            <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">${e.course_code}</span></td>
+            <td>${e.title}</td>
+            <td>${e.grade !== null ? `<strong>${e.grade}%</strong>` : '<span style="color:var(--text2)">Pending</span>'}</td>
+            <td><span class="badge ${e.status==='completed'?'badge-green':e.status==='enrolled'?'badge-purple':'badge-orange'}">${e.status}</span></td>
+          </tr>`).join('')}
+        </tbody></table></div>`;
+    }
+  } catch(err) {
+    console.error(err);
+  }
+}
+
+// ── COURSES ───────────────────────────────────────
+async function loadCourses(search='') {
+  const url = search ? `${API}/api/courses?search=${encodeURIComponent(search)}` : `${API}/api/courses`;
+  const tbody = document.getElementById('courses-table');
+  tbody.innerHTML = '<tr><td colspan="5" class="loading">Loading...</td></tr>';
+
+  try {
+    const res = await fetch(url, { headers: authHeaders() });
+    const data = await res.json();
+    const courses = data.courses || [];
+
+    if (courses.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text2)">No courses found</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = courses.map(c => `
+      <tr>
+        <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">${c.course_code}</span></td>
+        <td><strong>${c.title}</strong></td>
+        <td>${c.instructor_name || '—'}</td>
+        <td>${c.max_capacity}</td>
+        <td><span class="badge ${c.is_active ? 'badge-green' : 'badge-red'}">${c.is_active ? 'Active' : 'Inactive'}</span></td>
+      </tr>`).join('');
+  } catch(err) {
+    tbody.innerHTML = '<tr><td colspan="5" style="color:var(--danger);text-align:center;padding:20px">Error loading courses</td></tr>';
+  }
+}
+
+function searchCourses() {
+  const q = document.getElementById('course-search').value.trim();
+  loadCourses(q);
+}
+
+// ── GRADES ────────────────────────────────────────
+async function loadGrades() {
+  const tbody = document.getElementById('grades-table');
+  tbody.innerHTML = '<tr><td colspan="5" class="loading">Loading...</td></tr>';
+
+  try {
+    const res = await fetch(`${API}/api/grades/my`, { headers: authHeaders() });
+    const data = await res.json();
+    const enrollments = data.enrollments || [];
+
+    if (enrollments.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text2)">No enrollments found</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = enrollments.map(e => `
+      <tr>
+        <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">${e.course_code}</span></td>
+        <td>${e.title}</td>
+        <td>${e.grade !== null ? `<strong style="color:var(--success)">${e.grade}%</strong>` : '<span style="color:var(--text2)">Not graded</span>'}</td>
+        <td><span class="badge ${e.status==='completed'?'badge-green':e.status==='enrolled'?'badge-purple':'badge-orange'}">${e.status}</span></td>
+        <td style="color:var(--text2);font-size:12px">${new Date(e.enrolled_at).toLocaleDateString()}</td>
+      </tr>`).join('');
+  } catch(err) {
+    tbody.innerHTML = '<tr><td colspan="5" style="color:var(--danger);text-align:center;padding:20px">Error loading grades</td></tr>';
+  }
+}
+
+// ── UPLOAD ────────────────────────────────────────
+function handleFileSelect(input) {
+  const file = input.files[0];
+  if (file) {
+    document.getElementById('file-selected').style.display = 'block';
+    document.getElementById('file-selected').innerHTML = `📎 <strong>${file.name}</strong> — ${(file.size/1024).toFixed(1)} KB`;
+  }
+}
+
+async function uploadFile() {
+  const input = document.getElementById('file-input');
+  const successEl = document.getElementById('upload-success');
+  const errorEl = document.getElementById('upload-error');
+  successEl.style.display = 'none';
+  errorEl.style.display = 'none';
+
+  if (!input.files[0]) {
+    errorEl.textContent = 'Please select a file first!';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('file', input.files[0]);
+  formData.append('purpose', 'document');
+
+  try {
+    const res = await fetch(`${API}/api/upload`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` },
+      body: formData
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      errorEl.textContent = data.error || 'Upload failed';
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    successEl.textContent = `✅ File uploaded successfully: ${data.file.original_name}`;
+    successEl.style.display = 'block';
+    input.value = '';
+    document.getElementById('file-selected').style.display = 'none';
+    loadMyFiles();
+  } catch(err) {
+    errorEl.textContent = 'Upload failed — check server connection';
+    errorEl.style.display = 'block';
+  }
+}
+
+async function loadMyFiles() {
+  const el = document.getElementById('my-files');
+  el.innerHTML = '<div class="loading">Loading...</div>';
+
+  try {
+    const res = await fetch(`${API}/api/upload/my-files`, { headers: authHeaders() });
+    const data = await res.json();
+    const files = data.files || [];
+
+    if (files.length === 0) {
+      el.innerHTML = '<div class="empty"><div class="icon">📂</div><p>No files uploaded yet</p></div>';
+      return;
+    }
+
+    el.innerHTML = `<div class="table-wrap"><table>
+      <thead><tr><th>Filename</th><th>Type</th><th>Size</th><th>Purpose</th><th>Uploaded</th></tr></thead>
+      <tbody>${files.map(f => `
+        <tr>
+          <td><strong>${f.original_name}</strong></td>
+          <td><span style="font-size:12px;color:var(--text2)">${f.file_type}</span></td>
+          <td>${(f.file_size_bytes/1024).toFixed(1)} KB</td>
+          <td><span class="badge badge-purple">${f.upload_purpose}</span></td>
+          <td style="color:var(--text2);font-size:12px">${new Date(f.uploaded_at).toLocaleDateString()}</td>
+        </tr>`).join('')}
+      </tbody></table></div>`;
+  } catch(err) {
+    el.innerHTML = '<div style="color:var(--danger);padding:16px">Error loading files</div>';
+  }
+}
+
+// ── ADMIN USERS ───────────────────────────────────
+async function loadAdminUsers() {
+  const tbody = document.getElementById('admin-users-table');
+  tbody.innerHTML = '<tr><td colspan="5" class="loading">Loading...</td></tr>';
+
+  try {
+    const res = await fetch(`${API}/api/admin/users`, { headers: authHeaders() });
+    const data = await res.json();
+    const users = data.users || [];
+
+    tbody.innerHTML = users.map(u => `
+      <tr>
+        <td><strong>${u.full_name}</strong></td>
+        <td>${u.email}</td>
+        <td><span class="badge ${u.role==='admin'?'badge-red':u.role==='instructor'?'badge-orange':'badge-purple'}">${u.role}</span></td>
+        <td><span class="badge ${u.is_active?'badge-green':'badge-red'}">${u.is_active?'Active':'Inactive'}</span></td>
+        <td style="color:var(--text2);font-size:12px">${new Date(u.created_at).toLocaleDateString()}</td>
+      </tr>`).join('');
+  } catch(err) {
+    tbody.innerHTML = '<tr><td colspan="5" style="color:var(--danger);text-align:center;padding:20px">Error loading users</td></tr>';
+  }
+}
+
+// ── AUDIT LOGS ────────────────────────────────────
+async function loadAuditLogs() {
+  const el = document.getElementById('audit-logs');
+  el.innerHTML = '<div class="loading">Loading...</div>';
+
+  try {
+    const res = await fetch(`${API}/api/admin/logs`, { headers: authHeaders() });
+    const data = await res.json();
+    const logs = data.logs || [];
+
+    if (logs.length === 0) {
+      el.innerHTML = '<div class="empty"><div class="icon">🔍</div><p>No logs yet</p></div>';
+      return;
+    }
+
+    el.innerHTML = logs.map(log => `
+      <div class="log-entry">
+        <div class="log-dot ${log.status}"></div>
+        <div class="log-action">${log.action}</div>
+        <div style="font-size:13px;color:var(--text2)">${log.resource || '—'}</div>
+        <div style="margin-left:auto;display:flex;gap:12px;align-items:center">
+          <span class="badge ${log.status==='success'?'badge-green':log.status==='failure'?'badge-red':'badge-orange'}">${log.status}</span>
+          <span class="log-time">${new Date(log.created_at).toLocaleString()}</span>
+        </div>
+      </div>`).join('');
+  } catch(err) {
+    el.innerHTML = '<div style="color:var(--danger);padding:16px">Error loading logs</div>';
+  }
+}
+
+// Enter key for login
+document.addEventListener('keypress', e => {
+  if (e.key === 'Enter' && document.getElementById('login-page').style.display !== 'none') {
+    doLogin();
+  }
+});
+</script>
+</body>
+</html>
